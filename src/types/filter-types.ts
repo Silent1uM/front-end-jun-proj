@@ -1,0 +1,1 @@
+export type filterType = {name: string} | {type: string} | {industry: string};

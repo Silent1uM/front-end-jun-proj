@@ -1,0 +1,25 @@
+p {
+    text-align: center;
+}
+
+loading-spinner {
+    display: flex;
+    justify-content: center;
+}
+
+li {
+    border: solid;
+    list-style-type: none;
+    margin-bottom: 5px;
+}
+
+li:hover {
+    border-color: #8ac8ff;
+    background-color: #bde0ff;
+}
+
+ul {
+    border: solid;
+    padding: 5px;
+    margin: 10px;
+}

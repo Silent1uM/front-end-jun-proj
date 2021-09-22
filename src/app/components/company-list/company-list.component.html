@@ -1,0 +1,18 @@
+<h3> Список компаний <h3>
+<button (click)="requestCompanyListData()">Получить список компаний</button>
+
+<company-sort (onSortFieldChanged)="onSortFieldChanged($event)"></company-sort> 
+<company-filter (onFiltersChanged)="onFiltersChanged($event)" [companyList]="companyListToView"></company-filter>
+
+<div *ngIf="isLoading; else isNotLoading">
+    <p>Загрузка...</p>
+    <loading-spinner></loading-spinner>   
+</div>
+
+<ng-template #isNotLoading>    
+    <ul>
+        <li *ngFor="let company of companyListToView | filteringBy : filters | sortBy:sortField">
+            <list-item (click)='redirectToDetail(company)' [company]="company"></list-item>
+        </li>
+    </ul>
+</ng-template>

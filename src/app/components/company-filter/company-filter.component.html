@@ -1,0 +1,9 @@
+<form [formGroup]="filterForm">
+    Фильтр по имени <input name="name" formControlName="companyName">
+    Фильтр по типу  <select formControlName="companyTypes">
+                        <option *ngFor="let companyTypes of typesFiltersList" [ngValue]="companyTypes.id">{{companyTypes.type}}</option>
+                    </select>
+    Фильтр по индустрии  <select formControlName="companyIndustry">
+                        <option *ngFor="let companyIndustry of industryFiltersList" [ngValue]="companyIndustry.id">{{companyIndustry.industry}}</option>
+                    </select>
+</form>

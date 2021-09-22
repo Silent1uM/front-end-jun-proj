@@ -1,0 +1,5 @@
+<form [formGroup]="sortForm">
+    <select formControlName="sortingTypesList">
+        <option *ngFor="let sortingTypesList of sortingTypes" [ngValue]="sortingTypesList.id">{{sortingTypesList.name}}</option>
+      </select>
+</form>
