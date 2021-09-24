@@ -1,0 +1,29 @@
+h1 {
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: margin-left;
+}
+
+td {
+    border: 1px solid grey;
+    width: 50%;
+}
+
+button {
+    width: 100%;
+}
+
+button:hover {
+    border-color: #8ac8ff;
+    background-color: #bde0ff;
+}
+
+button:active {
+    border-color: #ffb833;
+    background-color: #ffc966;
+}

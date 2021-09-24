@@ -1,8 +1,19 @@
 <div>
-    <h1>FRONT END JUN</h1>
-    <nav>   
-        <button (click)='goToCompanyListPage()'>Список</button>  
-        <button (click)='goToYandexMapPage()'>Карта</button>        
-    </nav>
+    <table>
+        <tr>
+            <td colspan = "2">
+                <h1>FRONTEND JUN</h1>
+            </td>
+            
+        </tr>
+        <tr>    
+            <td>
+                <button (click)='goToCompanyListPage()'>Список</button>
+            </td>
+            <td>
+                <button (click)='goToYandexMapPage()'>Карта</button>        
+            </td>            
+        </tr>    
+    </table>
     <router-outlet></router-outlet>
 </div>

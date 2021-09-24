@@ -2,15 +2,13 @@ import {Component} from '@angular/core';
 import {ThemePalette} from '@angular/material/core';
 import {ProgressSpinnerMode} from '@angular/material/progress-spinner';
 
-/**
- * @title Индикатор загрузки
- */
 @Component({
     selector: 'loading-spinner',
     templateUrl: './loading-spinner.component.html',
 })
 
+/**Компонент индикатора загрузки списка компаний*/
 export class LoadingSpinner {
-    color: ThemePalette = 'primary';
-    mode: ProgressSpinnerMode = 'indeterminate';
+    public color: ThemePalette = 'primary';
+    public mode: ProgressSpinnerMode = 'indeterminate';
 }

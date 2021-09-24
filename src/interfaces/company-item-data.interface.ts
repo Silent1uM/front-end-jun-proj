@@ -1,5 +1,5 @@
 /**
- * Интерфейс с данными о компании
+ * Интерфейс с данными о компании, получаемыми при запросе
  */
 export interface ICompanyItemResponseData {
     id: number;

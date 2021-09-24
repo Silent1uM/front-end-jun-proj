@@ -1,63 +1,104 @@
-import { Component, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
 import { FormGroup, FormControl} from '@angular/forms';
-import { CompanyListItemViewModel } from 'src/classes/company-list-item-view-model';
+import { CompanyListItemViewModel } from 'src/view-models/company-list-item-view-model';
 import { filterType } from 'src/types/filter-types';
+import { Subscription } from 'rxjs';
 
 @Component ({
     selector: 'company-filter',
-    templateUrl: './company-filter.component.html'
+    templateUrl: './company-filter.component.html',
+    styleUrls: ['./company-filter.component.scss']
 })
 
-export class CompanyFilter {
+/**Компонент фильтрации списка компаний */
+export class CompanyFilter implements OnInit, OnDestroy {
 
-    private readonly _filterDisabledString : string = "Отключен"; 
-
+    /**Выбранный фильтр по имени */
     public chosenNameFilter: filterType = {name : ""};
-    public chosenTypeFilter: filterType = {type: this._filterDisabledString};
-    public chosenIndusrtyFilter: filterType = {industry: this._filterDisabledString};
+    
+    /**Выбранный фильтр по типу */
+    public chosenTypeFilter: filterType;
+    
+    /**Выбранный фильтр по индустрии */
+    public chosenIndusrtyFilter: filterType;
 
-    public typesFiltersList : {id: number, type: string}[] = [];
-    public industryFiltersList : {id: number, industry: string}[] = [];   
+    /**Список возможных фильтров по типам компаний */
+    public typesFiltersList : filterType [] = [];
 
+    /**Список возможных фильтров по типам индустрий */
+    public industryFiltersList : filterType [] = [];   
+    
+    /**Сеттер - ивент, реагирующий на получение нового списка компаний 
+     * @param newCompanyList: Новый список компаний
+    */
     @Input()
-    public set companyList(newCompanyList: CompanyListItemViewModel[])
-    { 
-        this.getTypesFiltersList(newCompanyList);
-        this.getIndustryFiltersList(newCompanyList);
+    public set prepareNewFiltersList(newCompanyList: CompanyListItemViewModel[]) { 
+        this.generateTypesFiltersList(newCompanyList);
+        this.generateIndustryFiltersList(newCompanyList);       
+        this.resetFilterParams();
     }
 
+    /**Ивент изменения текущих фильтров */
     @Output()
-    onFiltersChanged = new EventEmitter<filterType[]>();
+    public onFiltersChanged = new EventEmitter<filterType[]>();
 
+    /**Reactive form с элементами для выбора фильтров */
     public filterForm: FormGroup = new FormGroup({
 
         companyName: new FormControl(),
         companyTypes: new FormControl(0),
         companyIndustry: new FormControl(0)
     });
+    
+    /** Подписки компонента */
+    private _subscriptions: Subscription[] = [];
 
-    constructor() {
-        this.filterForm.get('companyName').valueChanges.subscribe(value => {
-            this.chosenNameFilter = {name: value.trim()};
-            this.generateNewFilterList();
-        });
+    /**Инициализация компонента */
+    public ngOnInit(): void {
+
+        this._subscriptions.push(
+            this.filterForm.get('companyName').valueChanges.subscribe(value => {                
+                this.chosenNameFilter = {name: value.trim()};
+                this.generateNewFilterList();
+        }));
         
-        this.filterForm.get('companyTypes').valueChanges.subscribe(value => {
-            this.chosenTypeFilter = {type: this.typesFiltersList[value].type};
-            this.generateNewFilterList();
-        });
+        this._subscriptions.push(
+            this.filterForm.get('companyTypes').valueChanges.subscribe(value => {                
+                this.chosenTypeFilter = {type: value};
+                this.generateNewFilterList();
+        }));
 
-        this.filterForm.get('companyIndustry').valueChanges.subscribe(value => {
-            this.chosenIndusrtyFilter = {industry: this.industryFiltersList[value].industry};
-            this.generateNewFilterList();
+        this._subscriptions.push(
+            this.filterForm.get('companyIndustry').valueChanges.subscribe(value => {            
+                this.chosenIndusrtyFilter ={industry: value};           
+                this.generateNewFilterList();
+        }));
+    }
+
+    /**Уничтожение объекта */
+    public ngOnDestroy(): void {
+        this._subscriptions.forEach((subscription) => {
+            subscription.unsubscribe();
         });
     }
 
-    private generateNewFilterList() {
+    /**Конструктор */
+    constructor() {
+        this.chosenTypeFilter = {type: this._filterDisabledString};
+        this.chosenIndusrtyFilter = {industry: this._filterDisabledString}        
+    }
+
+    /**Значения фильтров, которые будут установлены по умолчанию*/
+    private readonly _filterDisabledString : string = " "; 
+
+    /**Генерация нового списка применяемых фильтров*/
+    private generateNewFilterList(): void {
         const resultFilterList : filterType [] = [];
+        
         if (this.chosenNameFilter['name']) {
             resultFilterList.push(this.chosenNameFilter);
         }
+
         if (this.chosenTypeFilter['type'] !== this._filterDisabledString) {
             resultFilterList.push(this.chosenTypeFilter);
         }
@@ -66,13 +107,16 @@ export class CompanyFilter {
             resultFilterList.push(this.chosenIndusrtyFilter);
         }   
         this.onFiltersChanged.emit(resultFilterList);
-        console.log(resultFilterList);
     }
 
-    private getTypesFiltersList(newCompanyList: CompanyListItemViewModel[]) {
+    /**
+     * Формирование списка допустимых фильтров по типам компаний
+     * @param newCompanyList Новый список компаний
+     */
+    private generateTypesFiltersList(newCompanyList: CompanyListItemViewModel[]): void {
         
-        let typesFiltersNum: number = 0;
-        this.typesFiltersList = [{id : typesFiltersNum++, type: this._filterDisabledString}];
+        this.typesFiltersList = [{type: this._filterDisabledString}];
+                
         const newTypesFilterList: string[] = [];
         
         newCompanyList.forEach(company => {
@@ -81,26 +125,35 @@ export class CompanyFilter {
               
             if (!newTypesFilterList.includes(companyType)) {
                 newTypesFilterList.push(companyType);
-                this.typesFiltersList.push({id: typesFiltersNum++, type: companyType});
+                this.typesFiltersList.push({type: companyType});
             }           
         })
-        console.log(this.typesFiltersList);  
     }
 
-    private getIndustryFiltersList(newCompanyList: CompanyListItemViewModel[]) {
+    /**
+     * Формирование списка допустимых фильтров по индустриям компаний
+     * @param newCompanyList Новый список компаний
+     */
+    private generateIndustryFiltersList(newCompanyList: CompanyListItemViewModel[]): void {
         
-        let industryFiltersnum: number = 0;
-        this.industryFiltersList = [{id: industryFiltersnum++, industry: this._filterDisabledString}];
+        this.industryFiltersList = [{industry: this._filterDisabledString}];
+               
         const newIndustryFilterList: string[] = [];
-    
+        
         newCompanyList.forEach(company => {           
             const compatyIndustry:string = company.industry;
 
             if (!newIndustryFilterList.includes(compatyIndustry)) {
                 newIndustryFilterList.push(compatyIndustry);
-                this.industryFiltersList.push({id: industryFiltersnum++, industry: compatyIndustry});
+                this.industryFiltersList.push({industry: compatyIndustry});
             }            
-        })
-        console.log(this.industryFiltersList);    
+        }) 
+    }
+
+    /**Сброс текущих фильтров*/
+    private resetFilterParams() {
+        this.filterForm.get('companyName').setValue("");
+        this.filterForm.get('companyTypes').setValue(this._filterDisabledString);
+        this.filterForm.get('companyIndustry').setValue(this._filterDisabledString);
     }
 }

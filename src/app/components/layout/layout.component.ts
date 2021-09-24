@@ -3,20 +3,26 @@ import { Router } from '@angular/router';
 
 @Component({
     selector: 'main-layout',
-    templateUrl: './layout.component.html' 
+    templateUrl: './layout.component.html',
+    styleUrls: ['./layout.component.scss']
 })
 
+/**Компонент с основным layout'ом, который присутствует на каждом экране*/
 export class MainLayout {
 
-    constructor(private router: Router){}
+    /**
+     * Конструктор
+     * @param _router Сервис маршрутизации
+     */
+    constructor(private _router: Router){}
 
-    public goToYandexMapPage() {
-        this.router.navigate(['/company-yandex-map']);
+    /**Переход к странице с яндекс картой */
+    public goToYandexMapPage(): void {
+        this._router.navigate(['/company-yandex-map']);
     }   
 
-    public goToCompanyListPage() {
-        this.router.navigate(['/company-list']);
-    }
-
-    
+    /**Переход к странице со списком компаний*/
+    public goToCompanyListPage(): void {
+        this._router.navigate(['/company-list']);
+    }   
 }

@@ -1,18 +1,41 @@
-<h3> Список компаний <h3>
-<button (click)="requestCompanyListData()">Получить список компаний</button>
 
-<company-sort (onSortFieldChanged)="onSortFieldChanged($event)"></company-sort> 
-<company-filter (onFiltersChanged)="onFiltersChanged($event)" [companyList]="companyListToView"></company-filter>
-
+<table>
+    <tr>
+        <td colspan="2">
+            <button (click)="requestCompanyListData(true)">Принудительное обновление списка компаний</button>
+        </td>
+    </tr>
+    
+    <tr>
+        <td>
+            <company-sort (onSortFieldChanged)="onSortFieldChanged($event)"></company-sort> 
+        </td>
+        <td>
+            <company-filter (onFiltersChanged)="onFiltersChanged($event)" [prepareNewFiltersList]="companyListToView"></company-filter>
+        </td>
+    </tr>
+</table>
+    
 <div *ngIf="isLoading; else isNotLoading">
     <p>Загрузка...</p>
     <loading-spinner></loading-spinner>   
 </div>
 
-<ng-template #isNotLoading>    
-    <ul>
-        <li *ngFor="let company of companyListToView | filteringBy : filters | sortBy:sortField">
-            <list-item (click)='redirectToDetail(company)' [company]="company"></list-item>
-        </li>
-    </ul>
+<ng-template #isNotLoading>   
+    <div *ngIf="isError; else isNotError">
+        <p>Во время загрузки данных произошла ошибка</p>
+    </div> 
+    
+    <ng-template #isNotError>
+        <ul>                
+            <li *ngFor="let company of companyListToView | filteringBy : filters | sortBy:sortField; trackBy: countListSize">   
+                <list-item (click)='redirectToDetail(company)' [company]="company"></list-item>                        
+            </li>                     
+        </ul>
+    
+        <div *ngIf="isCompanyListEmpty">
+            <p>Заданными параметрам поиска не соответствует ни одна компания</p>
+        </div>
+    </ng-template>
+     
 </ng-template>

@@ -1,5 +1,6 @@
-import { ICompanyItemResponseData } from "../interfaces/company-item-data.interface";
+import { ICompanyItemResponseData } from "src/interfaces/company-item-data.interface";
 
+/**Модель компании*/
 export class CompanyListItemModel {
     
     public id: number;

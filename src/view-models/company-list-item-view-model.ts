@@ -1,8 +1,6 @@
-import {CompanyListItemModel} from "./company-list-item-model";
+import {CompanyListItemModel} from 'src/models/company-list-item-model';
 
-/**
- * Класс View-модель для страницы со списком компаний
- */
+/** View-модель для страницы со списком компаний */
 export class CompanyListItemViewModel {
    
     public logo: string;

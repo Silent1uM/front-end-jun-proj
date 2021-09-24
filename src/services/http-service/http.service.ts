@@ -1,20 +1,31 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ICompanyItemResponseData } from '../../interfaces/company-item-data.interface';
-import { CompanyListItemModel } from '../../classes/company-list-item-model';
-import { CompanyListItemViewModel } from 'src/classes/company-list-item-view-model';
+import { CompanyListItemModel } from 'src/models/company-list-item-model';
+import { CompanyListItemViewModel } from 'src/view-models/company-list-item-view-model';
 
+/**HTTP сервис для запроса списка компаний */
 @Injectable()
 export class HttpService {
 
+    /**
+     * Конструктор
+     * @param httpClient Сервис HTTP клиента
+     */
     constructor(private httpClient: HttpClient) { }
 
-
-    public getData(): Observable<CompanyListItemViewModel[]> {
-        return (this.httpClient.get('https://random-data-api.com/api/company/random_company?size=100') as Observable<ICompanyItemResponseData[]>)
+    /**
+     * Запрос данных о компанях
+     * @param forceUpdate Принудительно запросить новые данные о компаниях. Необязательный параметр, по умолчанию false
+     */
+    public getCompanyData(forceUpdate: boolean = false): Observable<CompanyListItemViewModel[]> {
+        
+        const params = new HttpParams().set('forceUpdate', forceUpdate);
+        
+        return (this.httpClient.get('https://random-data-api.com/api/company/random_company?size=100', {params}) as Observable<ICompanyItemResponseData[]>)
             .pipe(
                 map((data: ICompanyItemResponseData[]) => {
                     const companyList: CompanyListItemViewModel[] = [];

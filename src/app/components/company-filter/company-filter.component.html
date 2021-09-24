@@ -1,9 +1,37 @@
 <form [formGroup]="filterForm">
-    Фильтр по имени <input name="name" formControlName="companyName">
-    Фильтр по типу  <select formControlName="companyTypes">
-                        <option *ngFor="let companyTypes of typesFiltersList" [ngValue]="companyTypes.id">{{companyTypes.type}}</option>
-                    </select>
-    Фильтр по индустрии  <select formControlName="companyIndustry">
-                        <option *ngFor="let companyIndustry of industryFiltersList" [ngValue]="companyIndustry.id">{{companyIndustry.industry}}</option>
-                    </select>
+    <table>
+        <tr class="row-header">
+            <td colspan="3">
+                <h1>Фильтры</h1>
+            </td>            
+        </tr>
+        
+        <tr>
+            <td>
+                <h2>По имени</h2>
+            </td>
+            <td>
+                <h2>По типу</h2>
+            </td>
+            <td>
+                <h2>По индустрии</h2>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <input name="name" formControlName="companyName">
+            </td>
+            <td>
+                <select formControlName="companyTypes">
+                    <option *ngFor="let companyTypes of typesFiltersList | sortBy : 'type'" [ngValue]="companyTypes['type']">{{companyTypes['type']}}</option>
+                </select>
+            </td>
+            <td>
+                <select formControlName="companyIndustry">
+                    <option *ngFor="let companyIndustry of industryFiltersList | sortBy : 'industry'" [ngValue]="companyIndustry['industry']" >{{companyIndustry['industry']}}</option>
+                </select>
+            </td>
+        </tr>
+    </table>
 </form>
